@@ -1,4 +1,4 @@
-module tail
+module github.com/wowker/tail
 
 go 1.14
 

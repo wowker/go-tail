@@ -4,9 +4,9 @@
 package watch
 
 import (
+	"github.com/wowker/tail/util"
 	"os"
 	"runtime"
-	"tail/util"
 	"time"
 
 	"gopkg.in/tomb.v1"

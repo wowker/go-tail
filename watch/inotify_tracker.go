@@ -5,12 +5,12 @@ package watch
 
 import (
 	"github.com/fsnotify/fsnotify"
+	"github.com/wowker/tail/util"
 	"log"
 	"os"
 	"path/filepath"
 	"sync"
 	"syscall"
-	"tail/util"
 )
 
 type InotifyTracker struct {

@@ -5,7 +5,7 @@ package watch
 
 import (
 	"fmt"
-	"tail/util"
+	"github.com/wowker/tail/util"
 	"os"
 	"path/filepath"
 	"github.com/fsnotify/fsnotify"

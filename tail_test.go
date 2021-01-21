@@ -9,8 +9,8 @@ package tail
 import (
 	"fmt"
 	_ "fmt"
-	"tail/ratelimiter"
-	"tail/watch"
+	"github.com/wowker/tail/ratelimiter"
+	"github.com/wowker/tail/watch"
 	"io/ioutil"
 	"os"
 	"strings"

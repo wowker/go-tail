@@ -7,8 +7,9 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"tail/util"
-	"tail/watch"
+	"github.com/wowker/tail/ratelimiter"
+	"github.com/wowker/tail/util"
+	"github.com/wowker/tail/watch"
 	"io"
 	"io/ioutil"
 	"log"
@@ -17,7 +18,6 @@ import (
 	"sync"
 	"time"
 
-	"tail/ratelimiter"
 	"gopkg.in/tomb.v1"
 )
 
