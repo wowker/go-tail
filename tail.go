@@ -1,7 +1,7 @@
 // Copyright (c) 2015 HPE Software Inc. All rights reserved.
 // Copyright (c) 2013 ActiveState Software Inc. All rights reserved.
 
-package tail
+package go_tail
 
 import (
 	"bufio"
@@ -22,13 +22,13 @@ import (
 )
 
 var (
-	ErrStop = errors.New("tail should now stop")
+	ErrStop = errors.New("go-tail should now stop")
 )
 
 type Line struct {
 	Text string
 	Time time.Time
-	Err  error // Error from tail
+	Err  error // Error from go-tail
 }
 
 // NewLine returns a Line with present time.
@@ -58,18 +58,18 @@ type logger interface {
 type Config struct {
 	// File-specifc
 	Location    *SeekInfo // Seek to this location before tailing
-	ReOpen      bool      // Reopen recreated files (tail -F)
+	ReOpen      bool      // Reopen recreated files (go-tail -F)
 	MustExist   bool      // Fail early if the file does not exist
 	Poll        bool      // Poll for file changes instead of using inotify
 	Pipe        bool      // Is a named pipe (mkfifo)
 	RateLimiter *ratelimiter.LeakyBucket
 
 	// Generic IO
-	Follow      bool // Continue looking for new lines (tail -f)
+	Follow      bool // Continue looking for new lines (go-tail -f)
 	MaxLineSize int  // If non-zero, split longer lines into multiple lines
 
-	// Logger, when nil, is set to tail.DefaultLogger
-	// To disable logging: set field to tail.DiscardingLogger
+	// Logger, when nil, is set to go-tail.DefaultLogger
+	// To disable logging: set field to go-tail.DiscardingLogger
 	Logger logger
 }
 
@@ -137,7 +137,7 @@ func TailFile(filename string, config Config) (*Tail, error) {
 
 // Return the file's current position, like stdio's ftell().
 // But this value is not very accurate.
-// it may readed one line in the chan(tail.Lines),
+// it may readed one line in the chan(go-tail.Lines),
 // so it may lost one line.
 func (tail *Tail) Tell() (offset int64, err error) {
 	if tail.file == nil {
@@ -170,7 +170,7 @@ func (tail *Tail) StopAtEOF() error {
 	return tail.Wait()
 }
 
-var errStopAtEOF = errors.New("tail: stop at eof")
+var errStopAtEOF = errors.New("go-tail: stop at eof")
 
 func (tail *Tail) close() {
 	close(tail.Lines)
@@ -305,7 +305,7 @@ func (tail *Tail) tailFileSync() {
 			}
 
 			// When EOF is reached, wait for more data to become
-			// available. Wait strategy is based on the `tail.watcher`
+			// available. Wait strategy is based on the `go-tail.watcher`
 			// implementation (inotify or polling).
 			err := tail.waitForChanges()
 			if err != nil {
@@ -361,7 +361,7 @@ func (tail *Tail) waitForChanges() error {
 			tail.openReader()
 			return nil
 		} else {
-			tail.Logger.Printf("Stopping tail as file no longer exists: %s", tail.Filename)
+			tail.Logger.Printf("Stopping go-tail as file no longer exists: %s", tail.Filename)
 			return ErrStop
 		}
 	case <-tail.changes.Truncated:
@@ -429,7 +429,7 @@ func (tail *Tail) sendLine(line string) bool {
 	return true
 }
 
-// Cleanup removes inotify watches added by the tail package. This function is
+// Cleanup removes inotify watches added by the go-tail package. This function is
 // meant to be invoked from a process's exit handler. Linux kernel may not
 // automatically remove inotify watches after the process exits.
 func (tail *Tail) Cleanup() {

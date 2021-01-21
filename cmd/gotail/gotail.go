@@ -8,14 +8,14 @@ package main
 //	"fmt"
 //	"os"
 //
-//	"github.com/hpcloud/tail"
+//	"github.com/hpcloud/go-tail"
 //)
 //
-//func args2config() (tail.Config, int64) {
-//	config := tail.Config{Follow: true}
+//func args2config() (go-tail.Config, int64) {
+//	config := go-tail.Config{Follow: true}
 //	n := int64(0)
 //	maxlinesize := int(0)
-//	flag.Int64Var(&n, "n", 0, "tail from the last Nth location")
+//	flag.Int64Var(&n, "n", 0, "go-tail from the last Nth location")
 //	flag.IntVar(&maxlinesize, "max", 0, "max line size")
 //	flag.BoolVar(&config.Follow, "f", false, "wait for additional data to be appended to the file")
 //	flag.BoolVar(&config.ReOpen, "F", false, "follow, and track file rename/rotation")
@@ -36,7 +36,7 @@ package main
 //	}
 //
 //	if n != 0 {
-//		config.Location = &tail.SeekInfo{-n, os.SEEK_END}
+//		config.Location = &go-tail.SeekInfo{-n, os.SEEK_END}
 //	}
 //
 //	done := make(chan bool)
@@ -49,9 +49,9 @@ package main
 //	}
 //}
 //
-//func tailFile(filename string, config tail.Config, done chan bool) {
+//func tailFile(filename string, config go-tail.Config, done chan bool) {
 //	defer func() { done <- true }()
-//	t, err := tail.TailFile(filename, config)
+//	t, err := go-tail.TailFile(filename, config)
 //	if err != nil {
 //		fmt.Println(err)
 //		return

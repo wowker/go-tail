@@ -1,6 +1,6 @@
 // +build windows
 
-package tail
+package go_tail
 
 import (
 	"github.com/hpcloud/tail/winfile"
