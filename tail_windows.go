@@ -3,7 +3,6 @@
 package tail
 
 import (
-	"github.com/hpcloud/tail/winfile"
 	"os"
 )
 

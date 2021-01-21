@@ -10,8 +10,7 @@ import (
 	"path/filepath"
 	"sync"
 	"syscall"
-
-	"github.com/hpcloud/tail/util"
+	"tail/util"
 )
 
 type InotifyTracker struct {

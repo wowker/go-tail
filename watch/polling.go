@@ -6,9 +6,9 @@ package watch
 import (
 	"os"
 	"runtime"
+	"tail/util"
 	"time"
 
-	"github.com/hpcloud/tail/util"
 	"gopkg.in/tomb.v1"
 )
 
