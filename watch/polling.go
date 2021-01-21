@@ -68,7 +68,7 @@ func (fw *PollingFileWatcher) ChangeEvents(t *tomb.Tomb, pos int64) (*FileChange
 			time.Sleep(POLL_DURATION)
 			fi, err := os.Stat(fw.Filename)
 			if err != nil {
-				// Windows cannot delete a file if a handle is still open (go-tail keeps one open)
+				// Windows cannot delete a file if a handle is still open (tail keeps one open)
 				// so it gives access denied to anything trying to read it until all handles are released.
 				if os.IsNotExist(err) || (runtime.GOOS == "windows" && os.IsPermission(err)) {
 					// File does not exist (has been deleted).

@@ -4,7 +4,7 @@
 // TODO:
 //  * repeat all the tests with Poll:true
 
-package go_tail
+package tail
 
 import (
 	"fmt"
@@ -114,7 +114,7 @@ func TestStopAtEOF(t *testing.T) {
 }
 
 func TestMaxLineSizeFollow(t *testing.T) {
-	// As last file line does not end with newline, it will not be present in go-tail's output
+	// As last file line does not end with newline, it will not be present in tail's output
 	maxLineSize(t, true, "hello\nworld\nfin\nhe", []string{"hel", "lo", "wor", "ld", "fin"})
 }
 
@@ -129,7 +129,7 @@ func TestOver4096ByteLine(t *testing.T) {
 	tail := tailTest.StartTail("test.txt", Config{Follow: true, Location: nil})
 	go tailTest.VerifyTailOutput(tail, []string{"test", testString, "hello", "world"}, false)
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -142,7 +142,7 @@ func TestOver4096ByteLineWithSetMaxLineSize(t *testing.T) {
 	tail := tailTest.StartTail("test.txt", Config{Follow: true, Location: nil, MaxLineSize: 4097})
 	go tailTest.VerifyTailOutput(tail, []string{"test", testString, "hello", "world"}, false)
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -155,7 +155,7 @@ func TestLocationFull(t *testing.T) {
 	tail := tailTest.StartTail("test.txt", Config{Follow: true, Location: nil})
 	go tailTest.VerifyTailOutput(tail, []string{"hello", "world"}, false)
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -185,7 +185,7 @@ func TestLocationEnd(t *testing.T) {
 	<-time.After(100 * time.Millisecond)
 	tailTest.AppendFile("test.txt", "more\ndata\n")
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -202,7 +202,7 @@ func TestLocationMiddle(t *testing.T) {
 	<-time.After(100 * time.Millisecond)
 	tailTest.AppendFile("test.txt", "more\ndata\n")
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -240,7 +240,7 @@ func TestRateLimiting(t *testing.T) {
 	leakybucketFull := "Too much log activity; waiting a second before resuming tailing"
 	tail := tailTest.StartTail("test.txt", config)
 
-	// TODO: also verify that go-tail resumes after the cooloff period.
+	// TODO: also verify that tail resumes after the cooloff period.
 	go tailTest.VerifyTailOutput(tail, []string{
 		"hello", "world", "again",
 		leakybucketFull,
@@ -251,7 +251,7 @@ func TestRateLimiting(t *testing.T) {
 	<-time.After(1200 * time.Millisecond)
 	tailTest.AppendFile("test.txt", "more\ndata\n")
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -273,14 +273,14 @@ func TestTell(t *testing.T) {
 		tailTest.Errorf("Tell return error: %s", err.Error())
 	}
 	tail.Done()
-	// go-tail.close()
+	// tail.close()
 
 	config = Config{
 		Follow:   false,
 		Location: &SeekInfo{offset, os.SEEK_SET}}
 	tail = tailTest.StartTail("test.txt", config)
 	for l := range tail.Lines {
-		// it may readed one line in the chan(go-tail.Lines),
+		// it may readed one line in the chan(tail.Lines),
 		// so it may lost one line.
 		if l.Text != "world" && l.Text != "again" {
 			tailTest.Fatalf("mismatch; expected world or again, but got %s",
@@ -321,7 +321,7 @@ func maxLineSize(t *testing.T, follow bool, fileContent string, expected []strin
 	tail := tailTest.StartTail("test.txt", Config{Follow: follow, Location: nil, MaxLineSize: 3})
 	go tailTest.VerifyTailOutput(tail, expected, false)
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -366,7 +366,7 @@ func reOpen(t *testing.T, poll bool) {
 	<-time.After(delay)
 	tailTest.CreateFile("test.txt", "endofworld\n")
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(delay)
 	tailTest.RemoveFile("test.txt")
@@ -425,7 +425,7 @@ func reSeek(t *testing.T, poll bool) {
 	<-time.After(100 * time.Millisecond)
 	tailTest.TruncateFile("test.txt", "h311o\nw0r1d\nendofworld\n")
 
-	// Delete after a reasonable delay, to give go-tail sufficient time
+	// Delete after a reasonable delay, to give tail sufficient time
 	// to read all lines.
 	<-time.After(100 * time.Millisecond)
 	tailTest.RemoveFile("test.txt")
@@ -521,11 +521,11 @@ func (t TailTest) VerifyTailOutput(tail *Tail, lines []string, expectEOF bool) {
 	defer close(t.done)
 	t.ReadLines(tail, lines)
 	// It is important to do this if only EOF is expected
-	// otherwise we could block on <-go-tail.Lines
+	// otherwise we could block on <-tail.Lines
 	if expectEOF {
 		line, ok := <-tail.Lines
 		if ok {
-			t.Fatalf("more content from go-tail: %+v", line)
+			t.Fatalf("more content from tail: %+v", line)
 		}
 	}
 }
@@ -534,21 +534,21 @@ func (t TailTest) ReadLines(tail *Tail, lines []string) {
 	for idx, line := range lines {
 		tailedLine, ok := <-tail.Lines
 		if !ok {
-			// go-tail.Lines is closed and empty.
+			// tail.Lines is closed and empty.
 			err := tail.Err()
 			if err != nil {
-				t.Fatalf("go-tail ended with error: %v", err)
+				t.Fatalf("tail ended with error: %v", err)
 			}
-			t.Fatalf("go-tail ended early; expecting more: %v", lines[idx:])
+			t.Fatalf("tail ended early; expecting more: %v", lines[idx:])
 		}
 		if tailedLine == nil {
-			t.Fatalf("go-tail.Lines returned nil; not possible")
+			t.Fatalf("tail.Lines returned nil; not possible")
 		}
 		// Note: not checking .Err as the `lines` argument is designed
 		// to match error strings as well.
 		if tailedLine.Text != line {
 			t.Fatalf(
-				"unexpected line/err from go-tail: "+
+				"unexpected line/err from tail: "+
 					"expecting <<%s>>>, but got <<<%s>>>",
 				line, tailedLine.Text)
 		}

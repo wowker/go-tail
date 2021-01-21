@@ -1,6 +1,6 @@
 // +build linux darwin freebsd netbsd openbsd
 
-package go_tail
+package tail
 
 import (
 	"os"
